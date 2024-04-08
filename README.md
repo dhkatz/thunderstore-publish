@@ -18,15 +18,14 @@ jobs:
     steps:
       # Use checkout to publish the files in your repo
       - uses: actions/checkout@v3
-      - uses: GreenTF/upload-thunderstore-package@v4.2
+      - uses: dhkatz/thunderstore-publish@v1.0.0
         with:
-          namespace: GreenTF # the thunderstore 'team' to publish under
+          namespace: dhkatz # the thunderstore 'team' to publish under
           description: Test 
           token: ${{ secrets.YOUR_TOKEN_NAME }}
           name: test # the name of the package
           version: ${{ github.ref_name }} # Use the tag as the package version
           community: Northstar
-          repo: northstar.thunderstore.io
           categories: | # <-- notice this pipe character
             foo
             bar-baz
@@ -80,7 +79,6 @@ curl -X GET "https://thunderstore.io/api/experimental/community/northstar/catego
 | `icon`        | URL to download the icon from. Will try to find `icon.png` in the root of the repo if not provided.                                                                 | `false`  |
 | `readme`      | URL to download the readme from. Will try to find `README.md` in the root of the repo if not provided.                                                              | `false`  |
 | `dev`         | Publish to https://thunderstore.dev if set, https://thunderstore.io if not set.                                                                                     | `false`  |
-| `wrap`        | Directory to wrap the contents of the repo in. By default the contents of the root of the repo will be in the root of the package.                                  | `false`  |
 | `categories`  | A list, separated by newline characters, of categories to give to the mod when published. These must be available in the community you're publishing to.            | `false`  |
 | `deps`        | A list, separated by spaces, of mods this mod depends on. Must be in `namespace-modname@1.2.3` format. The publish will fail if any of these aren't a real package. | `false`  |
 | `website`     | The homepage URL for the mod. Defaults to the github repo URL.                                                                                                      | `false`  |
