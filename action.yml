@@ -6,9 +6,9 @@ branding:
   color: 'green'
 inputs:
   path: 
-    descritpion: 'Path to the files of the mod. Uses the contents of the repo if not set'
-  community:
-    description: 'Thunderstore community to publish to'
+    description: 'Path to the files of the mod. Uses the contents of the repo if not set'
+  communities:
+    description: 'Thunderstore communities to publish to'
     required: true
   namespace:
     description: 'Name of the team to publish the mod under'
@@ -32,8 +32,6 @@ inputs:
     required: true
   dev:
     description: 'Push to thunderstore.dev rather then thunderstore.io'
-  wrap:
-    description: 'Directory to wrap the contents of the repo in'
   website:
     description: 'Homepage URL'
   categories:
@@ -54,7 +52,7 @@ runs:
   image: 'Dockerfile'
   env: 
     TCLI_AUTH_TOKEN: ${{ inputs.token }}
-    TS_COMMUNITY: ${{ inputs.community }}
+    TS_COMMUNITIES: ${{ inputs.community }}
     TS_NAMESPACE: ${{ inputs.namespace }}
     TS_NAME: ${{ inputs.name }}
     TS_VERSION: ${{ inputs.version }}
@@ -63,7 +61,6 @@ runs:
     TS_README: ${{ inputs.readme }}
     TS_PATH: ${{ inputs.path }}
     TS_DEV: ${{ inputs.dev }}
-    TS_WRAP: ${{ inputs.wrap }}
     TS_WEBSITE: ${{ inputs.website }}
     TS_CATEGORIES: ${{ inputs.categories }}
     TS_DEPS: ${{ inputs.deps }}

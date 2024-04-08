@@ -1,4 +1,5 @@
 #!/bin/bash
+
 function setup() {
   echo "::group::Set up environment"
 
@@ -11,33 +12,28 @@ function setup() {
     p="."
   fi
 
-  mkdir -p "/dist"
-
   # Move files to the dist directory for the tcli
-  echo "Move files from $p to /dist"
-  mv $p/* /dist
 
   # Move the README if it exists
-  if [ -e "/dist/README.md" ]; then
-    echo "Move README"
-    mv "/dist/README.md" "/"
-  elif [ -n "$TS_README" ]; then
-    echo "Download README from $TS_README"
-    wget -O "/README.md" "$TS_README"
+  if [ -n "$TS_README" && -e "$TS_README" ]; then
+    echo "Copying README from $TS_README"
+    cp "$TS_README" "/"
+  elif [ -e "$p/README.md" ]; then
+    echo "Copying README"
+    cp "$p/README.md" "/"
   fi
 
-  if [ -e "/dist/icon.png" ]; then
-    echo "Move icon"
-    mv "/dist/icon.png" "/"
-  elif [ -n "$TS_ICON" ]; then
-    echo "Download icon from $TS_ICON"
-    wget -O "/icon.png" "$TS_ICON"
+  if [ -n "$TS_ICON" && -e "$TS_ICON" ]; then
+    echo "Copying icon from $TS_ICON"
+    cp "$TS_ICON" "/"
+  elif [ -e "$p/icon.png" ]; then
+    echo "Copying icon"
+    cp "$p/icon.png" "/"
   fi
-
 
   echo "::endgroup::"
-
 }
+
 function configure(){
   cd "/"
 
@@ -47,7 +43,7 @@ function configure(){
   echo "Init tcli config"
   tcli init --package-name ${TS_NAME} --package-namespace ${TS_NAMESPACE} --package-version ${TS_VERSION#v}
   
-  deno run --allow-net --allow-env --allow-read --allow-write cfg_edit.js
+  deno run --allow-net --allow-env --allow-read --allow-write manifest.ts
 
   echo "Done config edit"
   echo
@@ -57,12 +53,12 @@ function configure(){
 
 
 function publish() {
-  if [ -n "$TS_DEV" ]; then
-    repo="https://thunderstore.dev"
-  elif [ -n "$TS_REPO" ]; then
-    repo="https://thunderstore.io"
-  else 
+  if [ -n "$TS_REPO" ]; then
     repo="$TS_REPO"
+  elif [ -n "$TS_DEV" ]; then
+    repo="https://thunderstore.dev"
+  else
+    repo="https://thunderstore.io"
   fi
 
   # skip the build if there is a prebuilt package provided
