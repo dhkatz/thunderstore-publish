@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build Docker Image
-      run: docker build . --file Dockerfile.tcli --tag ghcr.io/greentf/tcli:latest
+      run: docker build . --file Dockerfile.tcli --tag ghcr.io/dhkatz/tcli:latest
     - name: Authenticate with GitHub Container Registry
       if: ${{ github.event_name == 'release' || github.event.inputs.push == 'true' }}
       uses: docker/login-action@v2.1.0
@@ -27,4 +27,4 @@ jobs:
         password: ${{ secrets.GHCR_TOKEN }}
     - name: Push Docker Image
       if: ${{ github.event_name == 'release' || github.event.inputs.push == 'true' }}
-      run: docker push ghcr.io/greentf/tcli:latest
+      run: docker push ghcr.io/dhkatz/tcli:latest
