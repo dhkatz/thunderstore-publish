@@ -1,4 +1,4 @@
-name: Build TCLI Image
+name: Build
 
 on:
   workflow_dispatch:
@@ -15,9 +15,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
     - name: Build the Docker image
       run: docker build . --file Dockerfile.tcli --tag ghcr.io/dhkatz/tcli:latest
+  
     - name: Authenticate with GHCR
       if: ${{ github.event_name == 'release' || github.event.inputs.push == 'true' }}
       uses: docker/login-action@v3
@@ -25,6 +28,7 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GHCR_TOKEN }}
+
     - name: Push Docker Image
       if: ${{ github.event_name == 'release' || github.event.inputs.push == 'true' }}
       run: docker push ghcr.io/dhkatz/tcli:latest
