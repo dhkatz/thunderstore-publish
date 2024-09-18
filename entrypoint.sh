@@ -4,7 +4,7 @@ function setup() {
   echo "::group::Set up environment"
 
   # If the TS_PATH var is set and not empty
-  if [ -n "$TS_PATH" ]; then
+  if [[ -n "$TS_PATH" ]]; then
     echo "::debug::TS_PATH found"
     p=$(echo $TS_PATH | sed 's:$/*::') #trim any trailing '/'
   else
@@ -15,18 +15,18 @@ function setup() {
   # Move files to the dist directory for the tcli
 
   # Move the README if it exists
-  if [ -n "$TS_README" && -e "$TS_README" ]; then
+  if [[ -n "$TS_README" && -e "$TS_README" ]]; then
     echo "Copying README from $TS_README"
     cp "$TS_README" "/"
-  elif [ -e "$p/README.md" ]; then
+  elif [[ -e "$p/README.md" ]]; then
     echo "Copying README"
     cp "$p/README.md" "/"
   fi
 
-  if [ -n "$TS_ICON" && -e "$TS_ICON" ]; then
+  if [[ -n "$TS_ICON" && -e "$TS_ICON" ]]; then
     echo "Copying icon from $TS_ICON"
     cp "$TS_ICON" "/"
-  elif [ -e "$p/icon.png" ]; then
+  elif [[ -e "$p/icon.png" ]]; then
     echo "Copying icon"
     cp "$p/icon.png" "/"
   fi
@@ -53,16 +53,16 @@ function configure(){
 
 
 function publish() {
-  if [ -n "$TS_REPO" ]; then
+  if [[ -n "$TS_REPO" ]]; then
     repo="$TS_REPO"
-  elif [ -n "$TS_DEV" ]; then
+  elif [[ -n "$TS_DEV" ]]; then
     repo="https://thunderstore.dev"
   else
     repo="https://thunderstore.io"
   fi
 
   # skip the build if there is a prebuilt package provided
-  if [ -n "$TS_FILE" ]; then
+  if [[ -n "$TS_FILE" ]]; then
     echo "::group::Publish package"
     echo "Publish to $repo"
     file="dist/$TS_FILE"
