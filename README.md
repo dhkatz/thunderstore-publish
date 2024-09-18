@@ -7,17 +7,18 @@ Github Action that uses the Thunderstore CLI to upload a package to Thunderstore
 ```yml
 name: Publish Mod
 
-# Run when a new release is... released
+# Run when a new tag is pushed (ie. via GitHub release or `git tag`)
 on: 
-  release:
-    types: [published]
+  push:
+    tags:
+      - '*'
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       # Use checkout to publish the files in your repo
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dhkatz/thunderstore-publish@v1.0.0
         with:
           namespace: dhkatz # the thunderstore 'team' to publish under
@@ -39,6 +40,7 @@ Figuring out how to refer to your community's categories can be somewhat confusi
 To find the categories available to your community, check out `https://thunderstore.io/api/experimental/community/YOUR_COMMUNITY/category/`, which will return a list of categories in a JSON format. Each category will have a `name` value and a `slug` value. The `slug` is the value you need to put in the `categories` list of the action.
 
 ### Example
+On Linux with `jq` installed:
  
 ```bash
 curl -X GET "https://thunderstore.io/api/experimental/community/northstar/category/" -H  "accept: application/json" | jq # 'jq' is a command line utility that formats JSON

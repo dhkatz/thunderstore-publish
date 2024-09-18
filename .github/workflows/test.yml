@@ -11,7 +11,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: pub
         uses: ./
         with:
@@ -20,10 +20,9 @@ jobs:
           dev: true
           token: ${{ secrets.TS_KEY }}
           description: From the thunderstore-publish GitHub Action
-          version: v0.${{ github.run_number }}.0
-          community: riskofrain2
+          version: v0.${{ github.run_number }}.${{ github.run_attempt }}
+          communities: riskofrain2
           repo: thunderstore.dev
-          wrap: mods
           categories: |
             mods
             maps
