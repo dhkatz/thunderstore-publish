@@ -22,11 +22,11 @@ jobs:
       - uses: dhkatz/thunderstore-publish@v1.0.0
         with:
           namespace: dhkatz # the thunderstore 'team' to publish under
-          description: Test 
-          token: ${{ secrets.YOUR_TOKEN_NAME }}
-          name: test # the name of the package
+          description: Test  # the description of the package, or a variable like ${{ vars.TS_DESCRIPTION }}
+          token: ${{ secrets.TS_TOKEN }} # the token to authenticate with, should be a secret
+          name: Some Cool Package # the name of the package, or a variable like ${{ vars.TS_NAME }}
           version: ${{ github.ref_name }} # Use the tag as the package version
-          community: Northstar
+          communities: Northstar # the community to publish to, or a variable like ${{ vars.TS_COMMUNITIES }}
           categories: | # <-- notice this pipe character
             foo
             bar-baz
@@ -70,7 +70,7 @@ curl -X GET "https://thunderstore.io/api/experimental/community/northstar/catego
 | Input         | Description                                                                                                                                                         | Required |
 |---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
 | `token`       | Service account token from Thunderstore. Should be saved as a repo secret and accessed with `${{ secrets.YOUR_TOKEN_NAME }}`                                        | `true`   |
-| `community`   | Thunderstore community to publish to.                                                                                                                               | `true`   |
+| `communities`   | Thunderstore community to publish to.                                                                                                                               | `true`   |
 | `namespace`   | Name of the team to publish under.                                                                                                                                  | `true`   |
 | `repo`        | URL or hostname of the repository to publish to (see [#22](https://github.com/GreenTF/upload-thunderstore-package/issues/22)).                                      | `false`  |
 | `name`        | Name of the package.                                                                                                                                                | `true`   |
