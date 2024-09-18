@@ -1,7 +1,9 @@
-name: Test Action
+name: Test
 
 on:
   push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -11,14 +13,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - id: pub
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Publishing to Thunderstore
+        id: publish
         uses: ./
         with:
+          token: ${{ secrets.TS_KEY }}
           namespace: dhkatz
           name: ThunderstorePublish
-          dev: true
-          token: ${{ secrets.TS_KEY }}
           description: From the thunderstore-publish GitHub Action
           version: v0.${{ github.run_number }}.${{ github.run_attempt }}
           communities: riskofrain2
@@ -30,4 +34,7 @@ jobs:
             items
           deps: |
             GreenTF-test@2708437257.35.1
-      - run: echo ${{ steps.pub.outputs.url }}
+          dev: true
+
+      - name: Output Thunderstore URL
+        run: echo ${{ steps.publish.outputs.url }}

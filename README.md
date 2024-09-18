@@ -1,36 +1,44 @@
 # thunderstore-publish
 
+[![Test](https://github.com/dhkatz/thunderstore-publish/actions/workflows/test.yml/badge.svg)](https://github.com/dhkatz/thunderstore-publish/actions/workflows/test.yml)
+
 Github Action that uses the Thunderstore CLI to upload a package to Thunderstore
 
 ## Usage
 
-```yml
-name: Publish Mod
+```yaml
+name: Publish
 
-# Run when a new tag is pushed (ie. via GitHub release or `git tag`)
-on: 
-  push:
-    tags:
-      - '*'
+on:
+  release:
+    types: [ released ]
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      # Use checkout to publish the files in your repo
-      - uses: actions/checkout@v4
-      - uses: dhkatz/thunderstore-publish@v1.0.0
+      - name: Fetch Sources
+        uses: actions/checkout@v4
         with:
-          namespace: dhkatz # the thunderstore 'team' to publish under
-          description: Test  # the description of the package, or a variable like ${{ vars.TS_DESCRIPTION }}
-          token: ${{ secrets.TS_TOKEN }} # the token to authenticate with, should be a secret
-          name: Some Cool Package # the name of the package, or a variable like ${{ vars.TS_NAME }}
-          version: ${{ github.ref_name }} # Use the tag as the package version
-          communities: Northstar # the community to publish to, or a variable like ${{ vars.TS_COMMUNITIES }}
-          categories: | # <-- notice this pipe character
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
+          filter: tree:0
+
+      - uses: dhkatz/thunderstore-publish@v1
+        id: publish
+        with:
+          token: ${{ secrets.TS_TOKEN }}
+          namespace: yournamespace # the namespace to publish under (ie. your username or team name)
+          name: Your Cool Package
+          description: Your cool package description
+          version: ${{ github.event.release.tag_name }}
+          communities: YourCommunity
+          categories: |
             foo
             bar-baz
 
+      - name: Output URL
+        run: echo "Published Thunderstore package to ${{ steps.publish.outputs.url }}"
 ```
 
 ## Categories
@@ -72,10 +80,10 @@ curl -X GET "https://thunderstore.io/api/experimental/community/northstar/catego
 | `token`       | Service account token from Thunderstore. Should be saved as a repo secret and accessed with `${{ secrets.YOUR_TOKEN_NAME }}`                                        | `true`   |
 | `communities`   | Thunderstore community to publish to.                                                                                                                               | `true`   |
 | `namespace`   | Name of the team to publish under.                                                                                                                                  | `true`   |
-| `repo`        | URL or hostname of the repository to publish to (see [#22](https://github.com/GreenTF/upload-thunderstore-package/issues/22)).                                      | `false`  |
 | `name`        | Name of the package.                                                                                                                                                | `true`   |
 | `description` | Description of the package that will appear on Thunderstore.                                                                                                        | `true`   |
 | `version`     | Package version in SemVer format.                                                                                                                                   | `true`   |
+| `repo`        | URL or hostname of the repository to publish to (see [#22](https://github.com/GreenTF/upload-thunderstore-package/issues/22)).                                      | `false`  |
 | `file`        | Path to a prebuilt zip file. Will skip the build step if provided.                                                                                                  | `false`  |
 | `path`        | Path of the files to package. Useful when using build artifacts from other steps. Defaults to using the contents of the repo.                                       | `false`  |
 | `icon`        | URL to download the icon from. Will try to find `icon.png` in the root of the repo if not provided.                                                                 | `false`  |
