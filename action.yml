@@ -1,4 +1,4 @@
-name: "Upload Thunderstore Package"
+name: "Publish Thunderstore Package"
 description: "Formats and uploads a Thunderstore package"
 author: "dhkatz"
 branding:
